@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.DisplayMetrics
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.ashokvarma.bottomnavigation.BottomNavigationBar
 import com.hjq.permissions.XXPermissions
 
 
@@ -42,5 +43,6 @@ fun Context.px2dp(px:Float):Int{
     val scale: Float = resources.displayMetrics.density
     return (px / scale + 0.5f).toInt()
 }
+
 
 
