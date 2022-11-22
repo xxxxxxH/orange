@@ -15,11 +15,13 @@ import com.ashokvarma.bottomnavigation.BottomNavigationItem
 import com.beta.orange.R
 import com.beta.orange.base.BaseActivity
 import com.beta.orange.databinding.ActivityMainBinding
+import com.beta.orange.event.RequestEvent
 import com.beta.orange.ui.fragment.Fragment1
 import com.beta.orange.ui.fragment.Fragment2
 import com.beta.orange.ui.fragment.Fragment3
 import com.beta.orange.ui.fragment.Fragment4
 import com.beta.orange.utils.dp2px
+import com.beta.orange.utils.print
 import com.beta.orange.viewmodel.MainActivityViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -48,19 +50,19 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), OnTabSelectedListener 
 //        viewModel.liveData.observe(this){
 //            "result = $it".print()
 //        }
-//        viewModel.request2().observe(this){
-//            when(it){
-//               is RequestEvent.StartRequestEvent->{
-//                    "on start".print()
-//                }
-//                is RequestEvent.SuccessRequestEvent->{
-//                    "result = ${it.data}".print()
-//                }
-//                is RequestEvent.FailRequestEvent->{
-//                    "on fail = ${it.exception?.message}".print()
-//                }
-//            }
-//        }
+        viewModel.request2().observe(this){
+            when(it){
+               is RequestEvent.StartRequestEvent->{
+                    "on start".print()
+                }
+                is RequestEvent.SuccessRequestEvent->{
+                    "result = ${it.data}".print()
+                }
+                is RequestEvent.FailRequestEvent->{
+                    "on fail = ${it.exception?.message}".print()
+                }
+            }
+        }
         switchFragment(0)
         activityBinding.navigationBar
             .setMode(BottomNavigationBar.MODE_FIXED)

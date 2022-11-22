@@ -19,8 +19,7 @@ class MainActivityRepository(
 
 
     fun request2() = flow<RequestEvent<Any>> {
-        emit(RequestEvent.SuccessRequestEvent(data = appService.requestData()))
-        UserEntityDataSource.insert(UserEntity(a = "a", b = "c"))
+        emit(RequestEvent.SuccessRequestEvent(data = appService.requestData().string()))
     }.onStart {
         emit(RequestEvent.StartRequestEvent())
     }.catch {
