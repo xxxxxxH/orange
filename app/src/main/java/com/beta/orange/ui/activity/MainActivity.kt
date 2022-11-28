@@ -15,7 +15,8 @@ import com.ashokvarma.bottomnavigation.BottomNavigationItem
 import com.beta.orange.R
 import com.beta.orange.base.BaseActivity
 import com.beta.orange.databinding.ActivityMainBinding
-import com.beta.orange.event.RequestEvent
+import com.beta.orange.net.AppService
+import com.beta.orange.net.RetrofitUtils
 import com.beta.orange.ui.fragment.Fragment1
 import com.beta.orange.ui.fragment.Fragment2
 import com.beta.orange.ui.fragment.Fragment3
@@ -23,8 +24,11 @@ import com.beta.orange.ui.fragment.Fragment4
 import com.beta.orange.utils.dp2px
 import com.beta.orange.utils.print
 import com.beta.orange.viewmodel.MainActivityViewModel
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import okhttp3.ResponseBody
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.lang.reflect.Field
 
 
@@ -42,27 +46,22 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), OnTabSelectedListener 
     private var fragment2: Fragment2? = null
     private var fragment3: Fragment3? = null
     private var fragment4: Fragment4? = null
+    private val retrofit = RetrofitUtils.get().retrofit()
+    private val apiServices = retrofit.create(AppService::class.java)
 
     override fun getViewBinding() = ActivityMainBinding.inflate(layoutInflater)
 
     override fun initialization() {
-//        viewModel.request()
-//        viewModel.liveData.observe(this){
-//            "result = $it".print()
-//        }
-        viewModel.request2().observe(this){
-            when(it){
-               is RequestEvent.StartRequestEvent->{
-                    "on start".print()
-                }
-                is RequestEvent.SuccessRequestEvent->{
-                    "result = ${it.data}".print()
-                }
-                is RequestEvent.FailRequestEvent->{
-                    "on fail = ${it.exception?.message}".print()
-                }
+        apiServices.getDomain().enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                "result -> = ${response.body()?.string()}".print()
             }
-        }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+            }
+
+        })
         switchFragment(0)
         activityBinding.navigationBar
             .setMode(BottomNavigationBar.MODE_FIXED)
@@ -97,7 +96,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), OnTabSelectedListener 
             )
             .setFirstSelectedPosition(0)
             .initialise()
-        setIconItemMargin(activityBinding.navigationBar,12,25,12)
+        setIconItemMargin(activityBinding.navigationBar, 12, 25, 12)
     }
 
     override fun onTabSelected(position: Int) {
@@ -222,7 +221,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), OnTabSelectedListener 
                         val iconView: ImageView =
                             view.findViewById(com.ashokvarma.bottomnavigation.R.id.fixed_bottom_navigation_icon) as ImageView
                         //设置图片参数，其中，MethodUtils.dip2px()：换算dp值
-                        params = FrameLayout.LayoutParams(dp2px(imgLen.toFloat()), dp2px(imgLen.toFloat()))
+                        params = FrameLayout.LayoutParams(
+                            dp2px(imgLen.toFloat()),
+                            dp2px(imgLen.toFloat())
+                        )
                         params.setMargins(0, 0, 0, space / 2)
                         params.gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
                         iconView.layoutParams = params

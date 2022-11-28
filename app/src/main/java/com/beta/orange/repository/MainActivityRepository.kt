@@ -1,6 +1,5 @@
 package com.beta.orange.repository
 
-import com.beta.orange.database.UserEntity
 import com.beta.orange.datasource.UserEntityDataSource
 import com.beta.orange.event.RequestEvent
 import com.beta.orange.net.AppService
@@ -14,12 +13,12 @@ class MainActivityRepository(
 ) {
 
     fun request() = flow {
-        emit(appService.requestData())
+        emit(appService.getDomain())
     }
 
 
     fun request2() = flow<RequestEvent<Any>> {
-        emit(RequestEvent.SuccessRequestEvent(data = appService.requestData().string()))
+        emit(RequestEvent.SuccessRequestEvent(data = appService.getDomain()))
     }.onStart {
         emit(RequestEvent.StartRequestEvent())
     }.catch {
